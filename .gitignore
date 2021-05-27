@@ -27,3 +27,5 @@
 
 swagger.yml
 sdk/*
+minaria
+dev.env

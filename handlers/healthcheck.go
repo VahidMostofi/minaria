@@ -1,12 +1,20 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 type HealthCheck struct {
 	l *log.Logger
+}
+
+func (h *HealthCheck) AttachRouter(mr *mux.Router) *mux.Router {
+	heathHandler := mr.PathPrefix("/health").Subrouter()
+	heathHandler.HandleFunc("", h.CheckHealthStatus).Methods(http.MethodGet)
+	return heathHandler
 }
 
 // NewHealthCheck returns a new HealthCheck
