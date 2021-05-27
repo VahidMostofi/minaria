@@ -3,3 +3,5 @@ package common
 const BIND_PORT = "BIND_PORT"
 
 const DISABLE_LOGGING = "DISABLE_LOGGING"
+
+const JWT_SIGN_KEY = "JWT_SIGN_KEY"
