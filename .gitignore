@@ -25,7 +25,6 @@
 
 # End of https://www.toptal.com/developers/gitignore/api/go
 
-swagger.yml
 sdk/*
 minaria
 dev.env

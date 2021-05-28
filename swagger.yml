@@ -1,0 +1,164 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  GenericError:
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+      more:
+        type: object
+        x-go-name: AdditionalInfo
+    type: object
+    x-go-package: github.com/vahidmostofi/minaria/handlers
+  JWTDTO:
+    properties:
+      token:
+        description: the jwt token for the logged in user
+        type: string
+        x-go-name: Token
+    type: object
+    x-go-package: github.com/vahidmostofi/minaria/domain
+  LoginDTO:
+    properties:
+      email:
+        description: the email address for this user
+        example: john@provider.net
+        format: email
+        type: string
+        x-go-name: Email
+      password:
+        description: the password for this user
+        format: password
+        type: string
+        x-go-name: Password
+    required:
+    - email
+    - password
+    type: object
+    x-go-package: github.com/vahidmostofi/minaria/domain
+  RegisterDTO:
+    properties:
+      email:
+        description: the email fo the new user
+        example: john@provider.net
+        format: email
+        type: string
+        x-go-name: Email
+      password:
+        description: the password for the new user
+        example: $tR0n@p@$SW0rD
+        format: password
+        type: string
+        x-go-name: Password
+      repeatPassword:
+        description: the repeat of the password field
+        example: $tR0n@p@$SW0rD
+        format: password
+        type: string
+        x-go-name: RepeatPassword
+      username:
+        description: the username fo the new user
+        example: john
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - email
+    - password
+    - repeatPassword
+    type: object
+    x-go-package: github.com/vahidmostofi/minaria/domain
+info:
+  description: Documentation for Minaria
+  title: Minaria
+  version: 0.1.0
+paths:
+  /auth/login:
+    post:
+      description: Returns the jwt token for the User if the email or password are
+        correct
+      operationId: loginUser
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/LoginDTO'
+      responses:
+        "200":
+          $ref: '#/responses/jwtDTOResponse'
+        "400":
+          $ref: '#/responses/validationErrorResponse'
+        "401":
+          $ref: '#/responses/usernamePasswordNotMatchResponse'
+        "500":
+          $ref: '#/responses/internalErrorResponse'
+      tags:
+      - auth
+  /auth/register:
+    post:
+      description: |-
+        Stores and registers a new user and then returns
+        the jwt token for the newly created user.
+      operationId: registerUser
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/RegisterDTO'
+      responses:
+        "200":
+          $ref: '#/responses/jwtDTOResponse'
+        "400":
+          $ref: '#/responses/validationErrorResponse'
+        "500":
+          $ref: '#/responses/internalErrorResponse'
+      tags:
+      - auth
+  /health:
+    get:
+      description: Returns no content and checks the health status
+      operationId: checkHealthStatus
+      responses:
+        "200":
+          $ref: '#/responses/noContentResponse'
+      tags:
+      - heath
+produces:
+- application/json
+responses:
+  genericErrorResponse:
+    description: Generic Error respones contains an error object returned
+    schema:
+      $ref: '#/definitions/GenericError'
+  internalErrorResponse:
+    description: |-
+      Internal Server error response contains an error object
+      returned, the message field is:
+      "internal server error".
+    schema:
+      $ref: '#/definitions/GenericError'
+  jwtDTOResponse:
+    description: JWT Data Transfer Object response contains the jwt token string
+    schema:
+      $ref: '#/definitions/JWTDTO'
+  noContentResponse:
+    description: No content is returned by this API endpoint
+  usernamePasswordNotMatchResponse:
+    description: |-
+      Username Password don't match Error response contains an
+      error object returned, the message field is:
+      "email and the password don't match".
+    schema:
+      $ref: '#/definitions/GenericError'
+  validationErrorResponse:
+    description: |-
+      Validation Error respones contains an error object similar
+      to GenericError but the mesage field is "FieldError" and
+      the more field contains a map from field to error
+    schema:
+      $ref: '#/definitions/GenericError'
+schemes:
+- http
+swagger: "2.0"
