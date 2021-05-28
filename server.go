@@ -52,6 +52,9 @@ func NewServer() *Server {
 	docsRouter.Handle("/swagger.yml", http.FileServer(http.Dir("./"))).Methods(http.MethodGet)
 
 	s.bindAddress = viper.GetString(common.BIND_PORT)
+	if s.bindAddress == "" {
+		s.bindAddress = os.Getenv("PORT") // for heroku
+	}
 	s.HTTPServer = http.Server{
 		Addr:         s.bindAddress,     // configure the bind address
 		Handler:      s.Router,          // set the default handler
