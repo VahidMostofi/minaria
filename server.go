@@ -53,7 +53,7 @@ func NewServer() *Server {
 
 	s.bindAddress = viper.GetString(common.BIND_PORT)
 	if s.bindAddress == "" {
-		s.bindAddress = os.Getenv("PORT") // for heroku
+		s.bindAddress = ":" + os.Getenv("PORT") // for heroku
 	}
 	s.HTTPServer = http.Server{
 		Addr:         s.bindAddress,     // configure the bind address
