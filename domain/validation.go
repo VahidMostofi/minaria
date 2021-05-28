@@ -49,7 +49,7 @@ func NewValidation() *Validation {
 	validate := validator.New()
 
 	if err := en_translations.RegisterDefaultTranslations(validate, translator); err != nil {
-		log.Fatalf("failed to register a default translation to validator: %w", err)
+		log.Fatalf("failed to register a default translation to validator: %s", err)
 	}
 
 	return &Validation{validate, translator}
