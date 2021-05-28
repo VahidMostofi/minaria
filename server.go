@@ -11,7 +11,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/vahidmostofi/minaria/common"
+	"github.com/vahidmostofi/minaria/domain"
 	"github.com/vahidmostofi/minaria/handlers"
+	"github.com/vahidmostofi/minaria/repositories"
+	"github.com/vahidmostofi/minaria/usecase"
 )
 
 type Server struct {
@@ -30,6 +33,15 @@ func NewServer() *Server {
 	// health checks
 	hh := handlers.NewHealthCheck(s.l)
 	hh.AttachRouter(s.Router)
+
+	// auth handlers
+	ur, _ := repositories.NewUserRepository( // TODO
+		repositories.InMemoryKind,
+		nil,
+	)
+	uc := usecase.NewUser(s.l, ur, usecase.UserOptions{})   // TODO
+	ah := handlers.NewAuth(s.l, uc, domain.NewValidation()) // TODO
+	ah.AttachRouter(s.Router)
 
 	// Swagger documentations
 	opts := middleware.RedocOpts{SpecURL: "/swagger.yml"}
